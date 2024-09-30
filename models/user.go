@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	gorm.Model
-	UserID       string `gorm:"unique;not null" json:"user_id"`      // Unique identifier for the user
+	UserID       uint   `gorm:"unique;not null" json:"user_id"`      // Unique identifier for the user
 	Name         string `gorm:"not null" json:"name"`                // Name of the user
 	Email        string `gorm:"unique;not null" json:"email"`        // User's email, must be unique
 	PasswordHash string `gorm:"not null" json:"-"`                   // Hashed password (don't expose it in JSON responses)
