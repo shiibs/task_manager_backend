@@ -65,3 +65,36 @@ func AddMemeberToTeam(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "User added to team successfully"})
 }
+
+func RemoveMemberFromTeam(c *gin.Context) {
+	adminID := c.MustGet("user_id").(uint)
+	teamID := c.Param("team_id")
+
+	var team models.Team
+	if err := database.DBConn.First(&team, teamID).Error; err != nil || team.AdminID != adminID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+		return
+	}
+
+	var req struct {
+		UserID uint `json:"user_id" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	var user models.User
+	if err := database.DBConn.First(&user, req.UserID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	if err := database.DBConn.Model(&team).Association("Memebers").Delete(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove user from team"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User removed from team successfully"})
+}

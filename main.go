@@ -37,6 +37,7 @@ func main() {
 	admin.GET("/users", handlers.ListUsers)
 	admin.POST("/teams", handlers.CreateTeam)
 	admin.POST("/teams/:team_id/members", handlers.AddMemeberToTeam)
+	admin.DELETE("/teams/:team_id/members", handlers.RemoveMemberFromTeam)
 
 	//member
 	user.GET("/profile", handlers.GetUserProfile)
