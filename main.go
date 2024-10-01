@@ -35,7 +35,8 @@ func main() {
 	// admin
 	admin.POST("/register", handlers.RegisterUser)
 	admin.GET("/users", handlers.ListUsers)
-	admin.POST("/team", handlers.CreateTeam)
+	admin.POST("/teams", handlers.CreateTeam)
+	admin.POST("/teams/:team_id/members", handlers.AddMemeberToTeam)
 
 	//member
 	user.GET("/profile", handlers.GetUserProfile)
