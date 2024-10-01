@@ -24,11 +24,21 @@ func main() {
 
 	r := gin.New()
 
-	// User routes
 	r.POST("/login", handlers.LoginUser)
-	r.POST("/register", middleware.AuthMiddleware(), middleware.AdminAuthMiddleware(), handlers.RegisterUser)
-	r.GET("/profile", middleware.AuthMiddleware(), handlers.GetUserProfile)
-	r.GET("/users", middleware.AuthMiddleware(), middleware.AdminAuthMiddleware(), handlers.ListUsers)
+
+	admin := r.Group("/admin")
+	admin.Use(middleware.AuthMiddleware(), middleware.AdminAuthMiddleware())
+
+	user := r.Group("/user")
+	user.Use(middleware.AuthMiddleware())
+
+	// admin
+	admin.POST("/register", handlers.RegisterUser)
+	admin.GET("/users", handlers.ListUsers)
+	admin.POST("/team", handlers.CreateTeam)
+
+	//member
+	user.GET("/profile", handlers.GetUserProfile)
 
 	r.Run(port)
 
